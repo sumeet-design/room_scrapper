@@ -1,0 +1,6 @@
+driver.execute_script("arguments[0].scrollIntoView(true);", button)
+                        # driver.execute_script("arguments[0].click();", button)
+                        # time.sleep(2)
+                        # info = get_modal_info(driver)
+                        # print('info: ', info)
+                        # print("view button clicked successfully using JavaScript")
