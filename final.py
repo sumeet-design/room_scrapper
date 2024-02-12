@@ -6,7 +6,7 @@ from faker import Faker
 from selenium.webdriver.common.action_chains import ActionChains
 import time
 
-CHAPTERS = ['CHAPTER ALDGATE', 'CHAPTER EALING']
+CHAPTERS = ['CHAPTER ALDGATE']
 PERIODS = ['SEP 24 - AUG 25 (51 WEEKS)', 'SEP 24 - JUL 25 (44 WEEKS)']
 
 def scrape_data():
@@ -24,8 +24,9 @@ def scrape_data():
     driver.get('https://www.chapter-living.com/booking/')
     
     # Accept all cookies if the "Accept All Cookies" button is present
+    time.sleep(4)
     try:
-        accept_all_cookies_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'onetrust-accept-btn-handler')))
+        accept_all_cookies_btn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'onetrust-accept-btn-handler')))
         accept_all_cookies_btn.click()
         print("Accepted all cookies.")
     except Exception as e:
@@ -83,6 +84,7 @@ def scrape_data():
 
 def get_modal_info(driver):
     print('will start the function......... <--------')
+    time.sleep(2)
     wait = WebDriverWait(driver, 10)
     name_element = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-name')))
     room_type_element = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-room')))
@@ -114,6 +116,12 @@ def get_modal_info(driver):
         'description': description,
         'features': features
     }
+    # Find the close button and click on it
+    # close_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.btn-close')))
+    # close_button.click()
+    time.sleep(1)
+    driver.execute_script("document.querySelector('button.btn-close').click();")
+    time.sleep(1)
     return info
 
 scrape_data()
