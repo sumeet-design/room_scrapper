@@ -78,48 +78,31 @@ def scrape_data () :
     driver = webdriver.Chrome()
     # Go to the webpage
     driver.get('https://www.chapter-living.com/booking/')
-    # Find the dropdown menu and select the option
-    # dropdown = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_Residence')))
-    # d = Select(dropdown)
-    # for option in d.options:
-    #     if option.text == 'CHAPTER KINGS CROSS':
-    #         # print("yeee")
-    #         option.click()
-    #         break
-    # # Find the date input fields and fill them in
-    # time.sleep(2)
-    # from_date = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_BookingPeriod')))
-    # d = Select(from_date)
-    # for option2 in d.options:
-    #     if option2.text == 'SEP 24 - AUG 25 (51 WEEKS)':
-    #         # print("yeee2")
-    #         option2.click()
-    #         break
-    # driver.execute_script("window.scrollBy(0, 300)")
+    
+    # Define the chapters and periods
+    CHAPTERS = ['CHAPTER ALDGATE']
+    PERIODS = ['SEP 24 - AUG 25 (51 WEEKS)', 'SEP 24 - JUL 25 (44 WEEKS)']
 
-    # dynamically select from the list
-    CHAPTERS = ['CHAPTER ALDGATE', 'CHAPTER EALING', 'CHAPTER HIGHBURY', 'CHAPTER HIGHBURY II', 'CHAPTER ISLINGTON', 'CHAPTER KINGS CROSS', 'CHAPTER LEWISHAM', 'CHAPTER OLD STREET', 'CHAPTER PORTOBELLO', 'CHAPTER SOUTH BANK', 'CHAPTER SPITALFIELDS', 'CHAPTER WESTMINSTER', 'CHAPTER WHITE CITY']
-    CHAPTERS = ['CHAPTER ALDGATE', 'CHAPTER EALING']
-    PERIODS = ['SEP 24 - AUG 25 (51 WEEKS)','SEP 24 - JUL 25 (44 WEEKS)']
-    dropdown = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_Residence')))
-    chapters = Select(dropdown)
-    print('chapters', len(chapters.options), chapters.options)
+    # Initialize the Chrome driver
+    driver = webdriver.Chrome()
+    # Go to the webpage
+    driver.get('https://www.chapter-living.com/booking/')
 
-    for chapter in chapters.options[:4]:
+    # Dynamically select from the list
+    dropdown_chapters = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_Residence')))
+    chapters_select = Select(dropdown_chapters)
 
-        if chapter.text == 'SELECT A PROPERTY':
-            continue
-        chapter.click()
-        print('the chapter is: ', chapter.text)
-        from_date = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_BookingPeriod')))
-        periods = Select(from_date)
-        time.sleep(2)
-        print('the periods are : ', periods)
-        print('string periods are', len(periods.options), periods.options)
+    for chapter_option in chapters_select.options:
+        if chapter_option.text in CHAPTERS:
+            chapters_select.select_by_visible_text(chapter_option.text)
+            #break
 
-        for period in periods.options:
-            if period.text == 'SELECT YOUR TERM DATES':
-                continue
+        for period in PERIODS:
+            dropdown_periods = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_BookingPeriod')))
+            periods_select = Select(dropdown_periods)
+            
+            periods_select.select_by_visible_text(period)
+    
             try:
                 print('i am trying for quick fiew.........', period.text)
                 period.click()
