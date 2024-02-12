@@ -10,6 +10,59 @@ import csv
 
 # saving data into csv file 
 
+def get_modal_info(driver):
+        
+    # Load the webpage
+    # driver.get("URL_OF_THE_PAGE")
+
+    # Wait for the relevant elements to load
+    print('will start the function......... <--------')
+    wait = WebDriverWait(driver, 10)
+
+    # Find the apartment details
+    name_element = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-name')))
+    room_type_element = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-room')))
+    price_range_element = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-price')))
+    description_element = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-description')))
+    features_list_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'features-list')))
+
+    # Extract information
+    name = name_element.text.strip()
+    room_type = room_type_element.find_element(By.TAG_NAME, 'strong').text.strip()
+    price_range = price_range_element.find_element(By.TAG_NAME, 'strong').text.strip()
+    description = description_element.text.strip()
+    features = [li.text.strip() for li in features_list_element.find_elements(By.TAG_NAME, 'li')]
+
+    # Print the apartment details
+    print("Apartment Details:")
+    print("Name:", name)
+    print("Room Type:", room_type)
+    print("Price Range:", price_range)
+    print("Description:", description)
+    print("Features:", features)
+    print()
+
+    # Find the carousel
+    carousel = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-gallery')))
+
+    # Find all image elements within the carousel
+    image_elements = carousel.find_elements(By.XPATH, './/img')
+
+    # Extract image links
+    image_links = [img.get_attribute('src') for img in image_elements]
+    info = {
+        'images': image_links,
+        'roomName': name,
+        'price': price_range,
+        'description': description,
+        'features': features
+    }
+    return info
+
+
+    # # Close the WebDriver
+    # driver.quit()
+
 def scrape_data () :
     details_dict = {}
     fake = Faker('en_GB')
@@ -26,23 +79,71 @@ def scrape_data () :
     # Go to the webpage
     driver.get('https://www.chapter-living.com/booking/')
     # Find the dropdown menu and select the option
+    # dropdown = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_Residence')))
+    # d = Select(dropdown)
+    # for option in d.options:
+    #     if option.text == 'CHAPTER KINGS CROSS':
+    #         # print("yeee")
+    #         option.click()
+    #         break
+    # # Find the date input fields and fill them in
+    # time.sleep(2)
+    # from_date = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_BookingPeriod')))
+    # d = Select(from_date)
+    # for option2 in d.options:
+    #     if option2.text == 'SEP 24 - AUG 25 (51 WEEKS)':
+    #         # print("yeee2")
+    #         option2.click()
+    #         break
+    # driver.execute_script("window.scrollBy(0, 300)")
+
+    # dynamically select from the list
+    CHAPTERS = ['CHAPTER ALDGATE', 'CHAPTER EALING', 'CHAPTER HIGHBURY', 'CHAPTER HIGHBURY II', 'CHAPTER ISLINGTON', 'CHAPTER KINGS CROSS', 'CHAPTER LEWISHAM', 'CHAPTER OLD STREET', 'CHAPTER PORTOBELLO', 'CHAPTER SOUTH BANK', 'CHAPTER SPITALFIELDS', 'CHAPTER WESTMINSTER', 'CHAPTER WHITE CITY']
+    CHAPTERS = ['CHAPTER ALDGATE', 'CHAPTER EALING']
+    PERIODS = ['SEP 24 - AUG 25 (51 WEEKS)','SEP 24 - JUL 25 (44 WEEKS)']
     dropdown = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_Residence')))
-    d = Select(dropdown)
-    for option in d.options:
-        if option.text == 'CHAPTER KINGS CROSS':
-            # print("yeee")
-            option.click()
-            break
-    # Find the date input fields and fill them in
-    time.sleep(2)
-    from_date = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_BookingPeriod')))
-    d = Select(from_date)
-    for option2 in d.options:
-        if option2.text == 'SEP 24 - AUG 25 (51 WEEKS)':
-            # print("yeee2")
-            option2.click()
-            break
-    driver.execute_script("window.scrollBy(0, 300)")
+    chapters = Select(dropdown)
+    print('chapters', len(chapters.options), chapters.options)
+
+    for chapter in chapters.options[:4]:
+
+        if chapter.text == 'SELECT A PROPERTY':
+            continue
+        chapter.click()
+        print('the chapter is: ', chapter.text)
+        from_date = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_BookingPeriod')))
+        periods = Select(from_date)
+        time.sleep(2)
+        print('the periods are : ', periods)
+        print('string periods are', len(periods.options), periods.options)
+
+        for period in periods.options:
+            if period.text == 'SELECT YOUR TERM DATES':
+                continue
+            try:
+                print('i am trying for quick fiew.........', period.text)
+                period.click()
+                # driver.execute_script("window.scrollBy(0, 600)")
+                # Wait for the relevant elements to load
+                wait = WebDriverWait(driver, 10)
+                # Find all buttons with class 'btn quick-view'
+                buttons = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.btn.quick-view')))
+                print('the buttons are : ', buttons)
+                # Click on each button
+                for button in buttons:
+                    print('will click on ', button)
+                    driver.execute_script("arguments[0].scrollIntoView(true);", button)
+                    button.click()
+                    time.sleep(2)
+                    info = get_modal_info(driver)
+                    print('info: ', info)
+                    # scrape (to be written)
+                    
+                
+                pass
+            except Exception as error:
+                print(error)
+
     time.sleep(2)
     # Submit the form
     get_ensuite = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'filter-room-type-ensuite')))
@@ -144,7 +245,12 @@ def scrape_data () :
     data['booking']['Unit Space Details'] =  all_details
 # Print or use the dictionary as needed
     # print(detials_dict)
+    print("this is data",data)
     return data
 
 # my_data = scrape_data()
 # print(my_data)
+
+
+x = scrape_data()
+print(x)
