@@ -1,0 +1,91 @@
+[
+    {
+        "galleryLink": [
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/op2jee14/chapter_highbury_six_bed_flat_kitchen_c115_alt_rtc.jpeg?anchor=center&mode=crop&width=2000&height=1000&rnd=132804052698470000",
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/pbddd5zs/wedgwood_bronze-plus-studio-613_alt_rtc.jpeg?anchor=center&mode=crop&width=2000&height=1000&rnd=132804053943070000",
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/x01dx0g4/wedgwood_six-bed-flat-kitchen_c115_alt3_rtc.jpeg?anchor=center&mode=crop&width=2000&height=1000&rnd=132804054230800000",
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/op2jee14/chapter_highbury_six_bed_flat_kitchen_c115_alt_rtc.jpeg?anchor=center&mode=crop&width=2000&height=1000&rnd=132804052698470000",
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/pbddd5zs/wedgwood_bronze-plus-studio-613_alt_rtc.jpeg?anchor=center&mode=crop&width=2000&height=1000&rnd=132804053943070000"
+        ],
+        "roomName": "CHAPTER HIGHBURY",
+        "price": "\u00a3370.00 - \u00a3385.00",
+        "description": "Gold & Silver options available.\nEn suite rooms are approximately 13 - 14 SQM in size and include an En suite bathroom, compact double bed, study space and plenty of storage. Residents will have access to a shared kitchen.\nEn Suite rooms are situated across G floor - floor 5.",
+        "features": [
+            "PRIVATE BEDROOMS"
+        ],
+        "duration": "SEP 24 - AUG 25 (51 WEEKS)",
+        "name": "CHAPTER HIGHBURY",
+        "period": "SEP 24 - AUG 25 (51 WEEKS)",
+        "details": [
+            {
+                "userCredentials": {
+                    "username": "mike.smith@example.com",
+                    "password": "password789"
+                },
+                "building": "Building X",
+                "rent": "\u00a31100",
+                "deposit": "\u00a3120",
+                "amenities": "Security, Concierge",
+                "unitSpaces": [
+                    {
+                        "space": "Space 5",
+                        "status": "Available"
+                    },
+                    {
+                        "space": "Space 6",
+                        "status": "Occupied"
+                    }
+                ],
+                "paymentPlanOption": [
+                    "Monthly",
+                    "Yearly"
+                ]
+            }
+        ]
+    },
+    {
+        "galleryLink": [
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/grafqt53/010a0596.jpeg?crop=0,0.20437305467523073,0,0.045854220182078083&cropmode=percentage&width=2000&height=1000&rnd=133015753183300000",
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/wd2ab1wx/010a0600.jpeg?crop=0,0.21303864330649283,0,0.037188631550815976&cropmode=percentage&width=2000&height=1000&rnd=133015755377130000",
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/g4kdyjhi/010a0587.jpeg?anchor=center&mode=crop&width=2000&height=1000&rnd=132804053864230000",
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/aqglnr5u/010a0578.jpeg?center=0.61310069509470444,0.45643780711282&mode=crop&width=2000&height=1000&rnd=133015755176900000",
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/grafqt53/010a0596.jpeg?crop=0,0.20437305467523073,0,0.045854220182078083&cropmode=percentage&width=2000&height=1000&rnd=133015753183300000",
+            "https://fde-chapterliving-bwapdadwb7bbdgfd.z01.azurefd.net/media/wd2ab1wx/010a0600.jpeg?crop=0,0.21303864330649283,0,0.037188631550815976&cropmode=percentage&width=2000&height=1000&rnd=133015755377130000"
+        ],
+        "roomName": "CHAPTER HIGHBURY",
+        "price": "\u00a3380.00",
+        "description": "Gold & Silver options available.\nEn suite rooms are approximately 13 - 14 SQM in size and include an En suite bathroom, compact double bed, study space and plenty of storage. Residents will have access to a shared kitchen.\nEn Suite rooms are situated across G floor - floor 5.",
+        "features": [
+            "PRIVATE BEDROOMS"
+        ],
+        "duration": "SEP 24 - AUG 25 (51 WEEKS)",
+        "name": "CHAPTER HIGHBURY",
+        "period": "SEP 24 - AUG 25 (51 WEEKS)",
+        "details": [
+            {
+                "userCredentials": {
+                    "username": "sara.jones@example.com",
+                    "password": "password101"
+                },
+                "building": "Building Y",
+                "rent": "\u00a31300",
+                "deposit": "\u00a3200",
+                "amenities": "Garden, Playground",
+                "unitSpaces": [
+                    {
+                        "space": "Space 7",
+                        "status": "Available"
+                    },
+                    {
+                        "space": "Space 8",
+                        "status": "Occupied"
+                    }
+                ],
+                "paymentPlanOption": [
+                    "Monthly",
+                    "Quarterly"
+                ]
+            }
+        ]
+    }
+]

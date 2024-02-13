@@ -1,0 +1,59 @@
+{
+    "CHAPTER HIGHBURY-SEP 24 - AUG 25 (51 WEEKS)": [
+      {
+        "name": "CHAPTER HIGHBURY",
+        "period": "SEP 24 - AUG 25 (51 WEEKS)",
+        "details": [
+          {
+            "userCredentials": {
+              "username": "mike.smith@example.com",
+              "password": "password789"
+            },
+            "building": "Building X",
+            "rent": "£1100",
+            "deposit": "£120",
+            "amenities": "Security, Concierge",
+            "unitSpaces": [
+              {
+                "space": "Space 5",
+                "status": "Available"
+              },
+              {
+                "space": "Space 6",
+                "status": "Occupied"
+              }
+            ],
+            "paymentPlanOption": ["Monthly", "Yearly"]
+          }
+        ]
+      },
+      {
+        "name": "CHAPTER HIGHBURY",
+        "period": "SEP 24 - AUG 25 (51 WEEKS)",
+        "details": [
+          {
+            "userCredentials": {
+              "username": "sara.jones@example.com",
+              "password": "password101"
+            },
+            "building": "Building Y",
+            "rent": "£1300",
+            "deposit": "£200",
+            "amenities": "Garden, Playground",
+            "unitSpaces": [
+              {
+                "space": "Space 7",
+                "status": "Available"
+              },
+              {
+                "space": "Space 8",
+                "status": "Occupied"
+              }
+            ],
+            "paymentPlanOption": ["Monthly", "Quarterly"]
+          }
+        ]
+      }
+    ]
+  }
+  

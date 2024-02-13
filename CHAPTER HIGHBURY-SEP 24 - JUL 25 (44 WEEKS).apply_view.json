@@ -1,0 +1,59 @@
+{
+    "CHAPTER HIGHBURY-SEP 24 - JUL 25 (44 WEEKS)": [
+      {
+        "name": "CHAPTER HIGHBURY",
+        "period": "SEP 24 - JUL 25 (44 WEEKS)",
+        "details": [
+          {
+            "userCredentials": {
+              "username": "john.doe@example.com",
+              "password": "password123"
+            },
+            "building": "Building A",
+            "rent": "£1000",
+            "deposit": "£100",
+            "amenities": "Gym, Pool",
+            "unitSpaces": [
+              {
+                "space": "Space 1",
+                "status": "Available"
+              },
+              {
+                "space": "Space 2",
+                "status": "Occupied"
+              }
+            ],
+            "paymentPlanOption": ["Monthly", "Yearly"]
+          }
+        ]
+      },
+      {
+        "name": "CHAPTER HIGHBURY",
+        "period": "SEP 24 - JUL 25 (44 WEEKS)",
+        "details": [
+          {
+            "userCredentials": {
+              "username": "jane.doe@example.com",
+              "password": "password456"
+            },
+            "building": "Building B",
+            "rent": "£1200",
+            "deposit": "£150",
+            "amenities": "Parking, Elevator",
+            "unitSpaces": [
+              {
+                "space": "Space 3",
+                "status": "Available"
+              },
+              {
+                "space": "Space 4",
+                "status": "Occupied"
+              }
+            ],
+            "paymentPlanOption": ["Monthly", "Quarterly"]
+          }
+        ]
+      }
+    ]
+  }
+  
