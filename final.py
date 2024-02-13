@@ -88,28 +88,7 @@ def scrape_data():
                         
                         time.sleep(2)
                         info = get_modal_info(driver)
-                        #print('info: ', info)
-                        #print("view button clicked successfully")
-
-                        # closing this because I already have in get_modal_info
-                        # time.sleep(1)
-                        # driver.execute_script("document.querySelector('button.btn-close').click();")
-                        # time.sleep(1)
-
-
-                        # now working for apply click button
-                        # Find and click the "Apply" button using JavaScript
-                        time.sleep(2)
-                        # Find and click the "Apply" button using JavaScript
-                        apply_button = driver.find_element(By.CSS_SELECTOR, 'a.room-list-selection')
-                        driver.execute_script("arguments[0].click();", apply_button)
-                        time.sleep(2)  # Wait for the page to load after clicking "Apply"
-                        #print("Apply button clicked successfully")
-
-
                         
-                        #addding login functionality here....
-
 
                         time.sleep(2)
                         driver.execute_script("window.scrollBy(0, 1100)")

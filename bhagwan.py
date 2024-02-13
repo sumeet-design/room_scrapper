@@ -8,33 +8,16 @@ from selenium.webdriver.common.keys import Keys
 import time
 import json
 
-CHAPTERS = ['CHAPTER ALDGATE']
+CHAPTERS = ['CHAPTER HIGHBURY']
 PERIODS = ['SEP 24 - AUG 25 (51 WEEKS)', 'SEP 24 - JUL 25 (44 WEEKS)']
 
 def scrape_data():
-    fake = Faker('en_GB')
-    data = {}
-    data['login'] = {}
-    data['booking'] = {}
-    data['login']['first_name'] = fake.first_name()
-    data['login']['last_name'] = fake.last_name()
-    data['login']['email'] = fake.email()
-    data['login']['password'] = fake.password()
-    data['login']['phone'] = fake.phone_number()[3:]
+    
+    #opt = webdriver.ChromeOptions()
 
-    # Setting up Chrome WebDriver options
-    opt = webdriver.ChromeOptions()
-    # opt.add_argument("--enable-javascript")
-    # opt.add_argument("--enable-cookies")
-    # opt.add_argument("--disable-blink-features=AutomationControlled")
-    # opt.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-   # prefs = {"profile.default_content_setting_values.notifications": 2,#
-        #    "profile.default_content_setting_values.geolocation": 2}
-    #opt.add_experimental_option("prefs", prefs)
-    #opt.add_experimental_option('excludeSwitches', ['enable-logging', 'enable-automation'])
-    opt.add_argument("user-data-dir=C://Users//91738//AppData//Local//Google//Chrome//chapter_living")
+    #opt.add_argument("user-data-dir=C://Users//91738//AppData//Local//Google//Chrome//chapter_living")
 
-    driver = webdriver.Chrome(options=opt)
+    driver = webdriver.Chrome()
     driver.maximize_window()  # Maximize the window
     driver.get('https://www.chapter-living.com/booking/')
     
@@ -73,33 +56,45 @@ def scrape_data():
             try:
                 print('i am trying for quick view.........', period_option.text)
                 
-                #wait = WebDriverWait(driver, 10)
-                #buttons = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.btn.quick-view')))
-                #print('the buttons are : ', buttons)
-                # for button in buttons:
-                #     print('will click on ', button)
-                #     count = 1
-                #     #try:
-                #     time.sleep(6)
-                #     # Use ActionChains to move to the element and click on it
-                #     actions = ActionChains(driver)
-                #     time.sleep(1)
-                #     actions.move_to_element(button).click().perform()
+                wait = WebDriverWait(driver, 10)
+                buttons = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.btn.quick-view')))
+                print('the buttons are : ', buttons)
+                combine_info = []
+                for button in buttons[:2]:
+                    print('will click on ', button)
+                    count = 1
+                    #try:
+                    time.sleep(6)
+                    # Use ActionChains to move to the element and click on it
+                    actions = ActionChains(driver)
+                    time.sleep(1)
+                    actions.move_to_element(button).click().perform()
                     
-                #     time.sleep(2)
-                #     info = get_modal_info(driver)
-                    #print('info: ', info)
-                    #print("view button clicked successfully")
+                    time.sleep(2)
+                    info = get_modal_info(driver)
+                    print('info: ', info)
+                    print("view button clicked successfully")
+                    #updating info dic with duration
+                    info['duration'] = duration
+                    combine_info.append(info)
 
-                    # closing this because I already have in get_modal_info
-                    # time.sleep(1)
-                    # driver.execute_script("document.querySelector('button.btn-close').click();")
-                    # time.sleep(1)
+                    
                 # get links
                 print('will look for this file: ', filenames[i])
                 links = get_link_from_file(filenames[i])
+                combined_apartment = []
                 for link in links:
                     try:
+                        fake = Faker('en_GB')
+                        data = {}
+                        data['login'] = {}
+                        data['booking'] = {}
+                        data['login']['first_name'] = fake.first_name()
+                        data['login']['last_name'] = fake.last_name()
+                        data['login']['email'] = fake.email()
+                        data['login']['password'] = fake.password()
+                        data['login']['phone'] = fake.phone_number()[3:]
+
                         # now working for apply click button
                         # Find and click the "Apply" button using JavaScript
                         time.sleep(2)
@@ -112,13 +107,7 @@ def scrape_data():
                         #driver.execute_script("arguments[0].click();", apply_button)
                         #driver.get()
                         time.sleep(2)  # Wait for the page to load after clicking "Apply"
-                        #print("Apply button clicked successfully")
-
-
                         
-                        #addding login functionality here....
-
-
                         time.sleep(2)
                         driver.execute_script("window.scrollBy(0, 1100)")
                         time.sleep(2)
@@ -157,11 +146,11 @@ def scrape_data():
                         details_containers = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sus-unit-space-details')))
                         count = 0
                         #scraping floorPlan map url
-                        floorplan_link = driver.find_element(By.CSS_SELECTOR, 'div[style="margin-bottom: 20px"] a')
+                        # floorplan_link = driver.find_element(By.CSS_SELECTOR, 'div[style="margin-bottom: 20px"] a')
 
                         
-                        floorplan_url = floorplan_link.get_attribute('href')
-                        print('will try to get floor plan link =.............> ', floorplan_url)
+                        # floorplan_url = floorplan_link.get_attribute('href')
+                        # print('will try to get floor plan link =.............> ', floorplan_url)
                         # Creating a list to store dictionaries of details for each element
                         all_details = []
                         # Iterate through each 'sus-unit-space-details' element
@@ -194,6 +183,7 @@ def scrape_data():
                             # Create a dictionary with the extracted details for each element
                             details_dict = {
                                 #"Space Value": space_value,
+                                "userCredentials":{"username":email,"password":password},
                                 "building": building,
                                 "rent": rent,
                                 "deposit": deposit,
@@ -206,50 +196,29 @@ def scrape_data():
                             }
                             print("This is detail dic",)
                             all_details.append(details_dict)
-                        #print("All details",all_details)
-
-                        #combining to final data format
-                        info['floorPlanUrl'] = floorplan_url
-                        info['apartments'] = all_details
-                        print(f"Full Property level data of Chapter{chapter_name}")
-                        #driver.back()
-                        # Navigate back using keyboard shortcut (Alt + Left Arrow)
-                        #driver.find_element(By.TAG_NAME,'body').send_keys(Keys.ALT + Keys.LEFT)
                         
-                        time.sleep(5)
-                        # driver.back()
+                        #combining all apartment data     
+                        combined_apartment.append(all_details)
                         
-                        # Press Alt + Left Arrow to go back
-                        driver.back()
-                        # driver.execute_script("window.history.go(-1)")
-                        # #print("Stuck in loading page -1..........")
-
-                        time.sleep(2)
-                        # Press Alt + Left Arrow to go back
-                        driver.back()
+                        #print(f"Full Property level data of Chapter{chapter_name}",all_details)
                         
-                        # driver.execute_script("window.history.go(-1)")
-                            
-                        #time.sleep(5)
-                        #print("Stuck in loading page..........")
-                        time.sleep(2)
-                        #driver.back()
                         print("Successfully completed Scraping  ....")
+                        driver.quit()
+                        time.sleep(5)
                     except Exception as click_error:
                         print("Error clicking on button:", click_error)
+            
+                #Combine all data 
+                        
+                combine_details(combine_info,combined_apartment)
+                return combine_details
+            
+            
             except Exception as error:
                 print(error)
                                     
-                        #     # Scroll to the top of the page
-                        #     driver.execute_script("window.scrollTo(0, 0);")
-                        #     time.sleep(1)  # Wait for scrolling to complete
-
-                        # driver.quit()
-
-    #saving complete data to json
-    file_path = "chapterAldgate.json"
-    with open(file_path, 'w') as json_file:
-        json.dump(data, json_file)   
+    
+    
     print("Data saved Successfully......................................")         
 def get_modal_info(driver):
     print('will start the function......... <--------')
@@ -268,13 +237,7 @@ def get_modal_info(driver):
     description = description_element.text.strip()
     features = [li.text.strip() for li in features_list_element.find_elements(By.TAG_NAME, 'li')]
 
-    print("Apartment Details:")
-    print("Name:", name)
-    print("Room Type:", room_type)
-    print("Price Range:", price_range)
-    print("Description:", description)
-    print("Features:", features)
-    print()
+    
 
     carousel = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-gallery')))
     image_elements = carousel.find_elements(By.XPATH, './/img')
@@ -284,8 +247,9 @@ def get_modal_info(driver):
         'roomName': name,
         'price': price_range,
         'description': description,
-        'features': features
-        #'duration': duration
+        'features': features,
+        # 'duration': duration,
+        
     }
     # Find the close button and click on it
     # close_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.btn-close')))
@@ -297,11 +261,35 @@ def get_modal_info(driver):
 
 def get_link_from_file(chapter_period):
     filename = 'chapterEaling1.txt'
-    with open(filename, 'r') as eye:
+    with open(chapter_period, 'r') as eye:
         lines = eye.readlines()
     links = [line.rstrip('\n') for line in lines]
 
 
     return links 
 
-scrape_data()
+def combine_details(quick_view_data,apply_button_data):
+    if len(quick_view_data)== len(apply_button_data):
+        print("Data is consistant and we are good to go..")
+        for i in range(len(quick_view_data)):
+            room_data = quick_view_data[i]
+            apply_data = apply_button_data[i]
+
+            room_data['apartment'] = apply_data
+        return quick_view_data
+    else:
+        return "Data is incosistant"
+
+property_data = scrape_data()
+# Serialize property_data with custom serialization function
+# serialized_data = json.dumps(property_data)
+#saving complete data to json
+print("this is property data",property_data)
+file_path = "chapterHighbury.json"
+json_results = json.dumps(property_data,indent=4)
+file_path_t = "chapterHighbury.txt"
+with open(file_path_t, 'w') as text_file:
+    text_file.write(property_data)
+with open(file_path, 'w') as json_file:
+    json_file.write(json_results)   
+print("File Saved Successfully.........")
