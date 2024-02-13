@@ -6,6 +6,7 @@ from faker import Faker
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 import time
+import json
 
 CHAPTERS = ['CHAPTER ALDGATE']
 PERIODS = ['SEP 24 - AUG 25 (51 WEEKS)', 'SEP 24 - JUL 25 (44 WEEKS)']
@@ -20,7 +21,20 @@ def scrape_data():
     data['login']['email'] = fake.email()
     data['login']['password'] = fake.password()
     data['login']['phone'] = fake.phone_number()[3:]
-    driver = webdriver.Chrome()
+
+    # Setting up Chrome WebDriver options
+    opt = webdriver.ChromeOptions()
+    # opt.add_argument("--enable-javascript")
+    # opt.add_argument("--enable-cookies")
+    # opt.add_argument("--disable-blink-features=AutomationControlled")
+    # opt.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+   # prefs = {"profile.default_content_setting_values.notifications": 2,#
+        #    "profile.default_content_setting_values.geolocation": 2}
+    #opt.add_experimental_option("prefs", prefs)
+    #opt.add_experimental_option('excludeSwitches', ['enable-logging', 'enable-automation'])
+    opt.add_argument("user-data-dir=C://Users//91738//AppData//Local//Google//Chrome//chapter_living")
+
+    driver = webdriver.Chrome(options=opt)
     driver.maximize_window()  # Maximize the window
     driver.get('https://www.chapter-living.com/booking/')
     
@@ -34,6 +48,7 @@ def scrape_data():
         print("No 'Accept All Cookies' button found or unable to accept all cookies:", e)
     
     for chapter_name in CHAPTERS:
+        
         print("Selecting chapter:", chapter_name)
         dropdown_chapters = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'BookingAvailabilityForm_Residence')))
         dropdown_chapters.click()
@@ -50,6 +65,7 @@ def scrape_data():
         for period_name in PERIODS:
             for period_option in dropdown_periods.find_elements(By.TAG_NAME, 'option'):
                 if period_option.text.strip() == period_name:
+                    duration = period_name
                     print("Selecting period:", period_name)
                     period_option.click()
                     time.sleep(2)  # Just for demonstration, you may remove this
@@ -59,23 +75,26 @@ def scrape_data():
                 
                 wait = WebDriverWait(driver, 10)
                 buttons = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.btn.quick-view')))
-                print('the buttons are : ', buttons)
+                #print('the buttons are : ', buttons)
                 for button in buttons:
                     print('will click on ', button)
+                    count = 1
                     try:
+                        time.sleep(6)
                         # Use ActionChains to move to the element and click on it
                         actions = ActionChains(driver)
+                        time.sleep(1)
                         actions.move_to_element(button).click().perform()
                         
                         time.sleep(2)
-                        #info = get_modal_info(driver)
+                        info = get_modal_info(driver)
                         #print('info: ', info)
                         #print("view button clicked successfully")
 
-
-                        time.sleep(1)
-                        driver.execute_script("document.querySelector('button.btn-close').click();")
-                        time.sleep(1)
+                        # closing this because I already have in get_modal_info
+                        # time.sleep(1)
+                        # driver.execute_script("document.querySelector('button.btn-close').click();")
+                        # time.sleep(1)
 
 
                         # now working for apply click button
@@ -85,14 +104,21 @@ def scrape_data():
                         apply_button = driver.find_element(By.CSS_SELECTOR, 'a.room-list-selection')
                         driver.execute_script("arguments[0].click();", apply_button)
                         time.sleep(2)  # Wait for the page to load after clicking "Apply"
-                        print("Apply button clicked successfully")
+                        #print("Apply button clicked successfully")
+
+
+                        
                         #addding login functionality here....
+
 
                         time.sleep(2)
                         driver.execute_script("window.scrollBy(0, 1100)")
                         time.sleep(2)
-                        cookie_accept = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pc_banner_accept_all')))
-                        cookie_accept.click()
+                        try:
+                            cookie_accept = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pc_banner_accept_all')))
+                            cookie_accept.click()
+                        except:
+                            print("Cookie is not availabe")
                         # Close the browser
                         first_name = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'applicant_first_name')))
                         first_name.send_keys(data['login']['first_name'])
@@ -115,13 +141,18 @@ def scrape_data():
                         i_agree = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'js-confirm')))
                         i_agree.click()
                         driver.execute_script("window.scrollBy(0, 1000)") 
-                        print("Login details entered successfully......")
+                        #print("Login details entered successfully......")
 
                         #scrolling to get  element .....
                         # Scroll to the bottom of the page
                         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                         details_containers = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'sus-unit-space-details')))
                         count = 0
+                        #scraping floorPlan map url
+                        floorplan_link = driver.find_element(By.CSS_SELECTOR, 'div[style="margin-bottom: 20px"] a')
+
+                        
+                        floorplan_url = floorplan_link.get_attribute('href')
                         # Creating a list to store dictionaries of details for each element
                         all_details = []
                         # Iterate through each 'sus-unit-space-details' element
@@ -145,37 +176,55 @@ def scrape_data():
                                 if len(cells) == 3:  # Ensure the row contains necessary data (3 cells)
                                     space = cells[1].text.strip()
                                     status = cells[2].text.strip()
-                                    space_status_details.append({"Space": space, "Status": status})
+                                    space_status_details.append({"space": space, "status": status})
                             #space = details_container.find_element(By.XPATH, ".//h6[text()='Unit Spaces']/following-sibling::table//td[3]").text
                             #status = details_container.find_element(By.XPATH, ".//h6[text()='Unit Spaces']/following-sibling::table//td[4]").text
                             payment_options = [option.text for option in details_container.find_elements(By.CSS_SELECTOR, ".payment-option-container ul.radio-group-list li span.value")]
 
                             # Create a dictionary with the extracted details for each element
                             details_dict = {
-                                "Space Value": space_value,
-                                "Building": building,
-                                "Rent": rent,
-                                "Deposit": deposit,
-                                "Amenities": amenities,
+                                #"Space Value": space_value,
+                                "building": building,
+                                "rent": rent,
+                                "deposit": deposit,
+                                "amenities": amenities,
                                 # "Unit Spaces": unit_spaces,
-                                "Unit Spaces": space_status_details,
+                                "unitSpaces": space_status_details,
                                 #"Space": space,
                                 #"Status": status,
-                                "Payment Options": payment_options
+                                "paymentPlanOption": payment_options
                             }
+                            print("This is detail dic",)
                             all_details.append(details_dict)
-                        print("All details",all_details)
-                        driver.back()
+                        #print("All details",all_details)
+
+                        #combining to final data format
+                        info['floorPlanUrl'] = floorplan_url
+                        info['apartments'] = all_details
+                        print(f"Full Property level data of Chapter{chapter_name}")
+                        #driver.back()
                         # Navigate back using keyboard shortcut (Alt + Left Arrow)
                         #driver.find_element(By.TAG_NAME,'body').send_keys(Keys.ALT + Keys.LEFT)
                         
                         time.sleep(5)
+                        # driver.back()
+                        
+                        # Press Alt + Left Arrow to go back
                         driver.back()
-                        time.sleep(2)
-                        print("Stuck in loading page..........")
+                        # driver.execute_script("window.history.go(-1)")
+                        # #print("Stuck in loading page -1..........")
 
+                        time.sleep(2)
+                        # Press Alt + Left Arrow to go back
+                        driver.back()
+                        
+                        # driver.execute_script("window.history.go(-1)")
+                            
+                        #time.sleep(5)
+                        #print("Stuck in loading page..........")
+                        time.sleep(2)
                         #driver.back()
-                        print("Successfully come to my main page....")
+                        print("Successfully completed Scraping  ....")
                     except Exception as click_error:
                         print("Error clicking on button:", click_error)
             except Exception as error:
@@ -187,7 +236,11 @@ def scrape_data():
 
                         # driver.quit()
 
-
+    #saving complete data to json
+    file_path = "chapterAldgate.json"
+    with open(file_path, 'w') as json_file:
+        json.dump(data, json_file)   
+    print("Data saved Successfully......................................")         
 def get_modal_info(driver):
     print('will start the function......... <--------')
     time.sleep(2)
@@ -197,6 +250,7 @@ def get_modal_info(driver):
     price_range_element = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-price')))
     description_element = wait.until(EC.presence_of_element_located((By.ID, 'apartmentModal-description')))
     features_list_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'features-list')))
+    #features_list_element = wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'features-list mb-3')))
 
     name = name_element.text.strip()
     room_type = room_type_element.find_element(By.TAG_NAME, 'strong').text.strip()
@@ -216,16 +270,17 @@ def get_modal_info(driver):
     image_elements = carousel.find_elements(By.XPATH, './/img')
     image_links = [img.get_attribute('src') for img in image_elements]
     info = {
-        'images': image_links,
+        'galleryLink': image_links,
         'roomName': name,
         'price': price_range,
         'description': description,
         'features': features
+        #'duration': duration
     }
     # Find the close button and click on it
     # close_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.btn-close')))
     # close_button.click()
-    time.sleep(1)
+    time.sleep(2)
     driver.execute_script("document.querySelector('button.btn-close').click();")
     time.sleep(1)
     return info
